@@ -1,5 +1,563 @@
-<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PIMTHARA AI FACTORY</title><style>*{box-sizing:border-box}body{margin:0;background:#071019;color:#eef4f8;font-family:system-ui,sans-serif;overflow:hidden}.top{height:60px;background:#0b151f;border-bottom:1px solid #29404e;padding:0 16px;display:flex;align-items:center;gap:14px}.logo{font-weight:800}.sub{color:#8fa3b3;font-size:12px}.layout{height:calc(100vh - 60px);display:flex}.side{width:220px;background:#0b151f;border-right:1px solid #29404e;padding:14px}.nav{padding:10px;margin:4px 0;color:#b9c9d4;border-radius:9px}.active{background:#173043;color:#fff}.main{flex:1;min-width:0}.bar{height:52px;padding:0 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #29404e}.ok{color:#64e58d;font-size:12px}.world{height:calc(100% - 52px);position:relative;overflow:hidden;background:radial-gradient(circle,#173040,#071019 65%)}.factory{position:absolute;left:50%;top:50%;width:980px;height:610px;transform:translate(-50%,-50%);background:#0c1a25;border:2px solid #385362;border-radius:24px}.zone{position:absolute;border:1px solid #304b59;border-radius:16px;background:#10212ccc}.zone h4{margin:11px;color:#91b1c1;font-size:12px}.m{left:16px;top:16px;width:310px;height:170px}.o{left:16px;bottom:16px;width:610px;height:390px}.s{right:16px;top:16px;width:300px;height:170px}.g{right:16px;top:202px;width:300px;height:180px}.t{right:16px;bottom:16px;width:300px;height:200px}.emp{position:absolute;width:105px;height:80px;cursor:pointer}.desk{position:absolute;left:25px;bottom:4px;width:65px;height:25px;border:2px solid #526b78;border-radius:6px;background:#1b303c}.screen{position:absolute;left:37px;bottom:31px;width:38px;height:24px;border:3px solid #718995;border-radius:4px;background:#091821}.char{position:absolute;left:5px;bottom:20px}.head{width:25px;height:25px;border-radius:50%;background:#f0c5a8;border:2px solid #27343b}.body{width:23px;height:22px;border-radius:7px;background:#63a9d7}.name{position:absolute;bottom:-9px;left:0;font-size:9px;white-space:nowrap}.dot{position:absolute;right:2px;top:0;width:9px;height:9px;border-radius:50%;background:#5be38a;box-shadow:0 0 9px #5be38a}.wait .dot{background:#e8c75d;box-shadow:0 0 9px #e8c75d}.popup{display:none;position:absolute;right:15px;top:15px;width:285px;background:#0d1a24;border:1px solid #496575;border-radius:15px;padding:15px;box-shadow:0 20px 50px #000b}.popup.show{display:block}.popup button{float:right;background:#172735;color:#fff;border:1px solid #38515f;border-radius:7px}.row{display:flex;justify-content:space-between;border-top:1px solid #263b47;padding:7px 0;font-size:12px}.muted{color:#91a6b3;font-size:11px}.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#173d2a;color:#72e69a;font-size:11px;font-weight:700}.zoom{position:absolute;right:15px;bottom:15px;display:flex;gap:6px}.zoom button{width:40px;height:40px;background:#0d1a24;color:#fff;border:1px solid #38515f;border-radius:9px;font-size:20px}@media(max-width:750px){.side{display:none}.factory{transform:translate(-50%,-50%) scale(.68)}.sub{display:none}.popup{width:270px}}
-</style></head><body><header class="top"><div class="logo">🏭 PIMTHARA AI FACTORY</div><div class="sub">Virtual AI Office • V1 Prototype</div></header><div class="layout"><aside class="side"><div class="nav active">🏭 Live Factory</div><div class="nav">📊 Dashboard</div><div class="nav">📋 Work Orders</div><div class="nav">👥 Employees</div><div class="nav">📥 Work Control</div><div class="nav">✅ QC</div><div class="nav">🕘 History / Audit</div><div class="nav">🔄 Workflow</div></aside><main class="main"><div class="bar"><b>Live Factory World</b><span class="ok">● Demo data</span></div><section class="world"><div id="factory" class="factory"><div class="zone m"><h4>MANAGEMENT</h4></div><div class="zone o"><h4>OPERATIONS</h4></div><div class="zone s"><h4>SUPPORT</h4></div><div class="zone g"><h4>GROWTH</h4></div><div class="zone t"><h4>TECHNOLOGY</h4></div></div><div id="popup" class="popup"><button onclick="closeP()">×</button><h2 id="pn"></h2><div class="muted" id="pi"></div><p><span class="pill" id="ps"></span></p><div class="row"><span>Department</span><b id="pd"></b></div><div class="row"><span>Role</span><b id="pr"></b></div><div class="row"><span>Work Order</span><b id="pw"></b></div><div class="row"><span>Step</span><b id="pt"></b></div></div><div class="zoom"><button onclick="z(-.1)">−</button><button onclick="r()">⌂</button><button onclick="z(.1)">+</button></div></section></main></div><script>
-const E=[['EMP-001','เมย์','Management','Factory Manager','Working'],['EMP-002','นัท','Operations','Work Control','Working'],['EMP-003','มิน','Operations','Planner','Working'],['EMP-004','พีท','Operations','Product Worker','Waiting'],['EMP-005','ใบเฟิร์น','Operations','Content Worker','Working'],['EMP-006','บอล','Operations','Video Editor','Working'],['EMP-007','ก้อย','Operations','QC','Waiting'],['EMP-008','ฟ้า','Support','Finance','Waiting'],['EMP-009','นุ่น','Support','HR','Waiting'],['EMP-010','เจน','Growth','Marketing','Working'],['EMP-011','แนน','Growth','Customer Service','Working'],['EMP-012','ริว','Technology','R&D','Working'],['EMP-013','ไอซ์','Technology','IT/System','Working'],['EMP-014','แอ้ม','Management','Executive Secretary','Working']];
-const P=[[55,40],[180,40],[55,210],[170,210],[285,210],[400,210],[515,210],[55,310],[170,310],[285,310],[400,310],[515,310],[80,490],[220,490]];E.forEach((e,i)=>{let d=document.createElement('div');d.className='emp '+(e[4]=='Waiting'?'wait':'');d.style.left=P[i][0]+'px';d.style.top=P[i][1]+'px';d.innerHTML='<span class="dot"></span><div class="char"><div class="head"></div><div class="body"></div></div><div class="desk"></div><div class="screen"></div><div class="name">'+e[1]+' · '+e[0]+'</div>';d.onclick=()=>openP(e);factory.appendChild(d)});let s=1;function z(x){s=Math.max(.6,Math.min(1.2,s+x));factory.style.transform=`translate(-50%,-50%) scale(${s})`}function r(){s=1;factory.style.transform='translate(-50%,-50%) scale(1)'}function openP(e){pn.textContent=e[1];pi.textContent=e[0];ps.textContent=e[4];pd.textContent=e[2];pr.textContent=e[3];pw.textContent=e[4]=='Working'?'WO-DEMO-001':'—';pt.textContent=e[4]=='Working'?'IN_PROGRESS':'WAITING';popup.classList.add('show')}function closeP(){popup.classList.remove('show')}
-</script></body></html>
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIMTHARA AI FACTORY</title>
+<style>
+:root {
+  --bg:#0b1020; --panel:#131b2e; --panel2:#19243a;
+  --line:#2b3852; --text:#f1f5ff; --muted:#a0aec5;
+  --accent:#70a5ff; --green:#57d6a0; --yellow:#ffd166;
+  --red:#ff7777;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+button,input,select,textarea { font:inherit; }
+button { cursor:pointer; }
+.app { min-height:100vh; }
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; padding:16px 20px; border-bottom:1px solid var(--line);
+  background:#0d1425; position:sticky; top:0; z-index:10;
+}
+.brand { display:flex; align-items:center; gap:12px; }
+.logo {
+  display:grid; place-items:center; width:42px; height:42px;
+  border-radius:13px; background:linear-gradient(135deg,#4b8cff,#9b7bff);
+  font-size:22px; font-weight:900;
+}
+.brand h1 { font-size:17px; margin:0; }
+.brand p { color:var(--muted); font-size:12px; margin:3px 0 0; }
+.top-actions { display:flex; gap:8px; align-items:center; }
+.btn {
+  border:1px solid var(--line); background:var(--panel2);
+  color:var(--text); padding:10px 13px; border-radius:10px;
+}
+.btn.primary { background:#356fe0; border-color:#568cff; }
+.btn:active { transform:scale(.98); }
+.layout { display:grid; grid-template-columns:225px minmax(0,1fr); }
+.sidebar {
+  border-right:1px solid var(--line); min-height:calc(100vh - 75px);
+  padding:18px 12px; background:#0e1628;
+}
+.nav-label {
+  color:var(--muted); font-size:11px; letter-spacing:1px;
+  margin:20px 10px 8px;
+}
+.nav {
+  display:flex; gap:10px; align-items:center; width:100%;
+  border:1px solid transparent; background:transparent; color:#c4cfe2;
+  padding:12px; border-radius:10px; text-align:left; margin:3px 0;
+}
+.nav:hover,.nav.active {
+  background:#1b2a45; color:white; border-color:#30486e;
+}
+.nav .ico { width:22px; text-align:center; }
+.main { padding:24px; min-width:0; }
+.page-head {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:14px; margin-bottom:22px; flex-wrap:wrap;
+}
+.page-head h2 { font-size:25px; margin:0 0 6px; }
+.muted { color:var(--muted); }
+.small { font-size:12px; }
+.grid { display:grid; gap:14px; }
+.stats { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.card {
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:15px; padding:17px; min-width:0;
+}
+.stat-title { color:var(--muted); font-size:13px; }
+.stat-number { font-size:29px; font-weight:800; margin:8px 0 4px; }
+.section-title {
+  display:flex; justify-content:space-between; align-items:center;
+  gap:10px; flex-wrap:wrap; margin:26px 0 12px;
+}
+.section-title h3 { margin:0; font-size:17px; }
+.pill {
+  display:inline-flex; align-items:center; gap:5px; border-radius:20px;
+  padding:5px 9px; font-size:11px; border:1px solid var(--line);
+  color:#dbe6fb; background:#1b2940;
+}
+.pill.green { color:#7ff0bc; background:#123729; border-color:#285e49; }
+.pill.yellow { color:#ffe09a; background:#3a301a; border-color:#66532c; }
+.pill.red { color:#ffaaaa; background:#421f2b; border-color:#733548; }
+.pill.blue { color:#a9caff; background:#172e51; border-color:#31588c; }
+.two-col { grid-template-columns:1.4fr 1fr; }
+.list { display:grid; gap:9px; }
+.list-row {
+  display:flex; justify-content:space-between; align-items:center;
+  gap:12px; padding:12px; border-radius:10px; background:#10192b;
+  border:1px solid #25334c;
+}
+.row-main { min-width:0; }
+.row-main strong { display:block; font-size:13px; }
+.row-main small { display:block; color:var(--muted); margin-top:4px; }
+.zone-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.zone {
+  border:1px solid var(--line); border-radius:14px; padding:14px;
+  background:linear-gradient(135deg,#17243a,#11192a);
+}
+.zone h3 { margin:0 0 5px; font-size:15px; }
+.zone p { margin:0 0 12px; font-size:12px; color:var(--muted); }
+.people { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.person {
+  border:1px solid #34425b; background:#202e45; color:var(--text);
+  padding:10px 7px; border-radius:11px; text-align:left; min-width:0;
+}
+.person:hover { border-color:var(--accent); background:#263b5c; }
+.person .face { font-size:23px; display:block; margin-bottom:6px; }
+.person strong { display:block; font-size:13px; }
+.person small { display:block; color:var(--muted); font-size:11px; margin-top:3px; }
+.person .workstate { display:block; margin-top:8px; font-size:10px; color:#7ff0bc; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; min-width:580px; }
+th,td { text-align:left; padding:12px 10px; border-bottom:1px solid var(--line); font-size:13px; }
+th { color:var(--muted); font-weight:600; }
+.empty { color:var(--muted); padding:24px; text-align:center; }
+.field { display:grid; gap:6px; margin-bottom:14px; }
+.field label { font-size:13px; color:#c9d5e9; }
+.field input,.field select,.field textarea {
+  width:100%; border:1px solid var(--line); background:#0e1729;
+  color:var(--text); padding:11px; border-radius:9px;
+}
+.field textarea { min-height:90px; resize:vertical; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.notice {
+  border:1px solid #35476a; background:#15243d; color:#c8dbff;
+  padding:13px; border-radius:11px; font-size:12px; line-height:1.7;
+}
+.footer { color:var(--muted); font-size:11px; padding:24px 0 8px; }
+.modal-backdrop {
+  position:fixed; inset:0; background:#000a; z-index:30;
+  display:none; align-items:center; justify-content:center; padding:16px;
+}
+.modal-backdrop.open { display:flex; }
+.modal {
+  width:min(540px,100%); max-height:90vh; overflow:auto;
+  background:#141e31; border:1px solid var(--line); border-radius:17px;
+  padding:20px;
+}
+.modal-head { display:flex; justify-content:space-between; gap:12px; align-items:center; }
+.modal-head h2 { margin:0; font-size:20px; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:18px 0; }
+.detail {
+  background:#0e1729; border:1px solid var(--line); border-radius:10px;
+  padding:11px; overflow-wrap:anywhere;
+}
+.detail small { display:block; color:var(--muted); margin-bottom:5px; }
+.detail strong { font-size:13px; }
+.mobile-menu { display:none; }
+#toast {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  background:#263a55; color:white; padding:12px 16px; border-radius:10px;
+  display:none; z-index:60; max-width:90vw; text-align:center;
+}
+@media(max-width:850px) {
+  .layout { grid-template-columns:1fr; }
+  .sidebar { display:none; min-height:0; border-right:0; border-bottom:1px solid var(--line); }
+  .sidebar.open { display:block; }
+  .mobile-menu { display:inline-block; }
+  .main { padding:17px 13px; }
+  .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .two-col { grid-template-columns:1fr; }
+  .topbar { padding:12px; }
+  .brand h1 { font-size:14px; }
+  .brand p { font-size:10px; }
+  .top-actions .desktop-only { display:none; }
+}
+@media(max-width:480px) {
+  .zone-grid { grid-template-columns:1fr; }
+  .form-grid { grid-template-columns:1fr; }
+  .page-head h2 { font-size:22px; }
+  .stat-number { font-size:25px; }
+  .detail-grid { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <button class="btn mobile-menu" onclick="toggleMenu()" aria-label="เปิดเมนู">☰</button>
+      <div class="logo">PF</div>
+      <div>
+        <h1>PIMTHARA AI FACTORY</h1>
+        <p>Virtual AI Office · Prototype V1</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span class="pill green">● DEMO MODE</span>
+      <button class="btn desktop-only" onclick="showPage('employees')">พนักงาน</button>
+      <button class="btn primary" onclick="showPage('create')">＋ สร้างงาน</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="nav-label">FACTORY</div>
+      <button class="nav active" data-page="dashboard" onclick="showPage('dashboard')"><span class="ico">▦</span> Dashboard</button>
+      <button class="nav" data-page="factory" onclick="showPage('factory')"><span class="ico">🌐</span> Live Factory</button>
+      <button class="nav" data-page="employees" onclick="showPage('employees')"><span class="ico">♟</span> Employees</button>
+      <div class="nav-label">WORK MANAGEMENT</div>
+      <button class="nav" data-page="orders" onclick="showPage('orders')"><span class="ico">▤</span> Work Orders</button>
+      <button class="nav" data-page="queue" onclick="showPage('queue')"><span class="ico">☷</span> Work Control / Queue</button>
+      <button class="nav" data-page="workflow" onclick="showPage('workflow')"><span class="ico">⇢</span> Workflow</button>
+      <button class="nav" data-page="qc" onclick="showPage('qc')"><span class="ico">✓</span> Quality Control</button>
+      <div class="nav-label">RECORDS</div>
+      <button class="nav" data-page="history" onclick="showPage('history')"><span class="ico">◷</span> History / Audit</button>
+      <button class="nav" data-page="reports" onclick="showPage('reports')"><span class="ico">▥</span> Reports</button>
+      <button class="nav" data-page="settings" onclick="showPage('settings')"><span class="ico">⚙</span> Settings</button>
+      <div class="notice" style="margin-top:22px">
+        <strong>PIMTHARA — OWNER</strong><br>
+        เจ้าของโรงงานและผู้ตัดสินใจขั้นสุดท้าย
+      </div>
+    </aside>
+
+    <main class="main" id="main"></main>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">รายละเอียด</h2>
+      <button class="btn" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+
+/* LOCKED EMPLOYEE MAPPING — PIMTHARA AI FACTORY */
+const employees = [
+ {id:"EMP-001",name:"เมย์",role:"Factory Manager",dept:"Management",face:"👩🏻‍💼"},
+ {id:"EMP-002",name:"นัท",role:"Work Control",dept:"Operations",face:"👨🏻‍💻"},
+ {id:"EMP-003",name:"มิน",role:"Planner",dept:"Operations",face:"👩🏻‍💻"},
+ {id:"EMP-004",name:"พีท",role:"Product Worker",dept:"Operations",face:"👨🏻‍🔧"},
+ {id:"EMP-005",name:"ใบเฟิร์น",role:"Content Worker",dept:"Operations",face:"👩🏻‍🎨"},
+ {id:"EMP-006",name:"บอล",role:"Video Editor",dept:"Operations",face:"👨🏻‍🎬"},
+ {id:"EMP-007",name:"ก้อย",role:"QC",dept:"Operations",face:"👩🏻‍🔍"},
+ {id:"EMP-008",name:"ฟ้า",role:"Finance",dept:"Support",face:"👩🏻‍💼"},
+ {id:"EMP-009",name:"นุ่น",role:"HR",dept:"Support",face:"👩🏻‍💼"},
+ {id:"EMP-010",name:"เจน",role:"Marketing",dept:"Growth",face:"👩🏻‍📱"},
+ {id:"EMP-011",name:"แนน",role:"Customer Service",dept:"Growth",face:"👩🏻‍🎧"},
+ {id:"EMP-012",name:"ริว",role:"R&D",dept:"Technology",face:"🧑🏻‍🔬"},
+ {id:"EMP-013",name:"ไอซ์",role:"IT/System",dept:"Technology",face:"🧑🏻‍💻"},
+ {id:"EMP-014",name:"แอ้ม",role:"Executive Secretary",dept:"Management",face:"👩🏻‍💼"}
+];
+
+const departments = [
+ {name:"Management",th:"ฝ่ายบริหาร",members:["EMP-014","EMP-001"]},
+ {name:"Operations",th:"ฝ่ายปฏิบัติการ",members:["EMP-002","EMP-003","EMP-004","EMP-005","EMP-006","EMP-007"]},
+ {name:"Support",th:"ฝ่ายสนับสนุน",members:["EMP-008","EMP-009"]},
+ {name:"Growth",th:"ฝ่ายเติบโตและลูกค้า",members:["EMP-010","EMP-011"]},
+ {name:"Technology",th:"ฝ่ายเทคโนโลยี",members:["EMP-012","EMP-013"]}
+];
+
+const workflowTemplates = [
+ {id:"WF-01",name:"PRODUCT",steps:"นัท → มิน → พีท → ก้อย"},
+ {id:"WF-02",name:"CONTENT",steps:"นัท → มิน → ใบเฟิร์น → ก้อย"},
+ {id:"WF-03",name:"VIDEO CONTENT",steps:"นัท → มิน → ใบเฟิร์น → บอล → ก้อย"},
+ {id:"WF-04",name:"VIDEO EDIT ONLY",steps:"นัท → มิน → บอล → ก้อย"}
+];
+
+let orders = [];
+let history = [];
+let nextOrder = 1;
+let currentPage = "dashboard";
+
+function esc(value) {
+ return String(value ?? "").replace(/[&<>"']/g, c => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
+function employee(id) { return employees.find(e=>e.id===id); }
+function statusClass(s) {
+ if(["COMPLETED","PASSED"].includes(s)) return "green";
+ if(["HOLD","FAILED","CANCELLED"].includes(s)) return "red";
+ if(["IN_PROGRESS","QC","READY_FOR_QC","ASSIGNED"].includes(s)) return "yellow";
+ return "blue";
+}
+function statusThai(s) {
+ return ({
+  DRAFT:"ฉบับร่าง",QUEUED:"รอคิว",ASSIGNED:"มอบหมายแล้ว",
+  IN_PROGRESS:"กำลังทำ",READY_FOR_QC:"รอตรวจ QC",QC:"กำลังตรวจ QC",
+  PASSED:"QC ผ่าน",COMPLETED:"เสร็จสมบูรณ์",HOLD:"พักงาน / รอข้อมูล",
+  FAILED:"QC ไม่ผ่าน",REVISION:"รอแก้ไข",PAUSED:"หยุดชั่วคราว",
+  CANCELLED:"ยกเลิก"
+ })[s] || s;
+}
+function log(action,detail) {
+ history.unshift({time:new Date().toLocaleString("th-TH"),action,detail});
+}
+function toast(msg) {
+ const el=document.getElementById("toast");
+ el.textContent=msg; el.style.display="block";
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>el.style.display="none",2800);
+}
+function showPage(page) {
+ currentPage=page;
+ document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("active",n.dataset.page===page));
+ document.getElementById("sidebar").classList.remove("open");
+ render();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function toggleMenu() {
+ document.getElementById("sidebar").classList.toggle("open");
+}
+function pageHead(title,sub,button="") {
+ return `<div class="page-head"><div><h2>${title}</h2><div class="muted">${sub}</div></div>${button}</div>`;
+}
+function stat(title,value,sub) {
+ return `<div class="card"><div class="stat-title">${title}</div><div class="stat-number">${value}</div><div class="muted small">${sub}</div></div>`;
+}
+function pill(s) {
+ return `<span class="pill ${statusClass(s)}">${esc(statusThai(s))}</span>`;
+}
+function employeeButton(e) {
+ const active=orders.some(o=>o.employeeId===e.id && !["COMPLETED","CANCELLED"].includes(o.status));
+ return `<button class="person" onclick="openEmployee('${e.id}')">
+  <span class="face">${e.face}</span><strong>${esc(e.name)}</strong>
+  <small>${esc(e.id)}</small><small>${esc(e.role)}</small>
+  <span class="workstate">${active?"● มีงานในระบบ":"● รอรับงาน"}</span>
+ </button>`;
+}
+function renderDashboard() {
+ const active=orders.filter(o=>!["COMPLETED","CANCELLED"].includes(o.status)).length;
+ const done=orders.filter(o=>o.status==="COMPLETED").length;
+ const qc=orders.filter(o=>["READY_FOR_QC","QC"].includes(o.status)).length;
+ const hold=orders.filter(o=>o.status==="HOLD").length;
+ return pageHead("Dashboard","ภาพรวมการทำงานของ PIMTHARA AI FACTORY")+
+ `<div class="grid stats">
+ ${stat("พนักงาน AI","14","พนักงานตามโครงสร้างที่ล็อกไว้")}
+ ${stat("งานทั้งหมด",orders.length,"Work Orders ในต้นแบบนี้")}
+ ${stat("งานที่ยังไม่เสร็จ",active,"รวมงานที่กำลังทำและรอคิว")}
+ ${stat("รอ QC / ติดปัญหา",qc+hold,`รอ QC ${qc} · HOLD ${hold}`)}
+ </div>
+ <div class="grid two-col">
+ <section>
+  <div class="section-title"><h3>งานล่าสุด</h3><button class="btn" onclick="showPage('orders')">ดูงานทั้งหมด →</button></div>
+  <div class="card">${orders.length?`<div class="list">${orders.slice(0,5).map(orderRow).join("")}</div>`:`<div class="empty">ยังไม่มี Work Order<br>กด “สร้างงาน” เพื่อเพิ่มงานทดลอง</div>`}</div>
+ </section>
+ <section>
+  <div class="section-title"><h3>แผนกในโรงงาน</h3><button class="btn" onclick="showPage('factory')">เปิด Factory →</button></div>
+  <div class="card list">${departments.map(d=>`<div class="list-row"><div class="row-main"><strong>${d.th}</strong><small>${d.name}</small></div><span class="pill">${d.members.length} คน</span></div>`).join("")}</div>
+ </section>
+ </div>
+ <div class="section-title"><h3>สถานะงาน</h3></div>
+ <div class="grid stats">
+ ${stat("รอคิว",orders.filter(o=>o.status==="QUEUED").length,"QUEUED")}
+ ${stat("กำลังทำ",orders.filter(o=>o.status==="IN_PROGRESS").length,"IN_PROGRESS")}
+ ${stat("เสร็จแล้ว",done,"COMPLETED")}
+ ${stat("พักงาน",hold,"HOLD")}
+ </div>
+ <div class="footer">ข้อมูลนี้เป็น DEMO และจะหายเมื่อรีเฟรชหน้าเว็บหรือปิดแท็บ</div>`;
+}
+function orderRow(o) {
+ return `<div class="list-row"><div class="row-main"><strong>${esc(o.id)} · ${esc(o.title)}</strong><small>${esc(o.type)} · ${esc(o.ownerName||"ยังไม่มอบหมาย")}</small></div>${pill(o.status)}<button class="btn" onclick="openOrder('${o.id}')">ดู</button></div>`;
+}
+function renderFactory() {
+ return pageHead("Live Factory","แผนผังโรงงานต้นแบบ · แตะพนักงานเพื่อดูรายละเอียด",
+ `<button class="btn" onclick="showPage('employees')">รายชื่อพนักงาน</button>`)
+ +`<div class="notice">นี่คือแผนผังจำลองเบื้องต้น ไม่ใช่ภาพ 3D เคลื่อนไหว สถานะตัวละครยังไม่เชื่อมระบบงานจริง</div>
+ <div class="section-title"><h3>PIMTHARA AI FACTORY WORLD</h3><span class="pill blue">5 DEPARTMENTS · 14 EMPLOYEES</span></div>
+ <div class="grid zone-grid">${departments.map(d=>`
+  <section class="zone"><h3>${d.th}</h3><p>${d.name} · ${d.members.length} employees</p>
+  <div class="people">${d.members.map(id=>employeeButton(employee(id))).join("")}</div></section>
+ `).join("")}</div>
+ <div class="footer">PIMTHARA เป็นเจ้าของโรงงานจากภายนอก ไม่มี Avatar อยู่ใน Factory</div>`;
+}
+function renderEmployees() {
+ return pageHead("Employees","รายชื่อพนักงาน AI ทั้ง 14 คน")+
+ `<div class="grid zone-grid">${departments.map(d=>`
+  <section class="zone"><h3>${d.th}</h3><p>${d.name}</p>
+  <div class="people">${d.members.map(id=>employeeButton(employee(id))).join("")}</div>
+  </section>`).join("")}</div>`;
+}
+function renderOrders() {
+ return pageHead("Work Orders","รายการงานทั้งหมดในต้นแบบ",
+ `<button class="btn primary" onclick="showPage('create')">＋ สร้างงาน</button>`)
+ +`<div class="card table-wrap">${orders.length?`<table><thead><tr><th>WO ID</th><th>ชื่องาน</th><th>ประเภท</th><th>ผู้รับผิดชอบ</th><th>สถานะ</th><th>รายละเอียด</th></tr></thead><tbody>
+ ${orders.map(o=>`<tr><td>${esc(o.id)}</td><td>${esc(o.title)}</td><td>${esc(o.type)}</td><td>${esc(o.ownerName||"-")}</td><td>${pill(o.status)}</td><td><button class="btn" onclick="openOrder('${o.id}')">เปิด</button></td></tr>`).join("")}
+ </tbody></table>`:`<div class="empty">ยังไม่มีงานในระบบทดลอง</div>`}</div>`;
+}
+function renderQueue() {
+ const queue=orders.filter(o=>!["COMPLETED","CANCELLED"].includes(o.status));
+ return pageHead("Work Control / Queue","คิวงานสำหรับตรวจสอบในต้นแบบ")+
+ `<div class="notice">กฎจริง: นัทสามารถกระจายได้เฉพาะ Work Order ที่ผ่านการตรวจสอบและอนุมัติตามกติกา ระบบอนุมัติและสิทธิ์แบบเต็มยังไม่ได้เชื่อมต่อ</div>
+ <div class="section-title"><h3>คิวงานที่ยังไม่ปิด</h3><span class="pill">${queue.length} งาน</span></div>
+ <div class="card">${queue.length?`<div class="list">${queue.map(orderRow).join("")}</div>`:`<div class="empty">ไม่มีงานค้างในคิว</div>`}</div>`;
+}
+function renderWorkflow() {
+ return pageHead("Workflow","แม่แบบ Workflow ที่กำหนดไว้")+
+ `<div class="grid">${workflowTemplates.map(w=>`<div class="card"><div class="row-main"><strong>${w.id} · ${w.name}</strong><small>ลำดับส่งต่องาน</small></div><p>${esc(w.steps)}</p><span class="pill blue">TEMPLATE</span></div>`).join("")}</div>
+ <div class="notice" style="margin-top:15px">การส่งต่องานต้องเป็นไปตาม Workflow ไม่ใช่ให้ AI เลือกผู้รับเอง · QC ตรวจ PASS/FAIL และไม่ทำหน้าที่แก้ชิ้นงาน</div>`;
+}
+function renderQC() {
+ const list=orders.filter(o=>["READY_FOR_QC","QC","FAILED","REVISION"].includes(o.status));
+ return pageHead("Quality Control","ตรวจงานที่ส่งเข้าคิว QC")+
+ `<div class="notice">ในต้นแบบนี้ PIMTHARA สามารถทดลองเปลี่ยนสถานะ QC ได้ การเปลี่ยนสถานะยังไม่ใช่การตรวจคุณภาพโดย AI จริง</div>
+ <div class="card" style="margin-top:15px">${list.length?`<div class="list">${list.map(o=>`
+ <div class="list-row"><div class="row-main"><strong>${esc(o.id)} · ${esc(o.title)}</strong><small>${esc(o.type)} · ${esc(o.ownerName||"-")}</small></div>${pill(o.status)}
+ <button class="btn" onclick="openOrder('${o.id}')">ตรวจงาน</button></div>`).join("")}</div>`:`<div class="empty">ไม่มีงานรอตรวจ QC</div>`}</div>`;
+}
+function renderHistory() {
+ return pageHead("History / Audit","บันทึกเหตุการณ์ในต้นแบบ")+
+ `<div class="card table-wrap">${history.length?`<table><thead><tr><th>เวลา</th><th>เหตุการณ์</th><th>รายละเอียด</th></tr></thead><tbody>${history.map(h=>`<tr><td>${esc(h.time)}</td><td>${esc(h.action)}</td><td>${esc(h.detail)}</td></tr>`).join("")}</tbody></table>`:`<div class="empty">ยังไม่มีประวัติ</div>`}</div>
+ <div class="notice" style="margin-top:14px">ประวัตินี้เก็บในหน่วยความจำของหน้าเว็บเท่านั้น ไม่ใช่ Audit Trail ถาวร</div>`;
+}
+function renderReports() {
+ const total=orders.length;
+ const completed=orders.filter(o=>o.status==="COMPLETED").length;
+ const pct=total?Math.round(completed/total*100):0;
+ return pageHead("Reports","รายงานสรุปจากข้อมูลทดลอง")+
+ `<div class="grid stats">
+ ${stat("งานทั้งหมด",total,"Work Orders")}
+ ${stat("เสร็จสมบูรณ์",completed,"COMPLETED")}
+ ${stat("อัตราเสร็จงาน",pct+"%","คำนวณจากข้อมูลตัวอย่าง")}
+ ${stat("พนักงาน",employees.length,"Employee records")}
+ </div>
+ <div class="card" style="margin-top:15px"><h3>สถานะงานทั้งหมด</h3>${["DRAFT","QUEUED","ASSIGNED","IN_PROGRESS","READY_FOR_QC","QC","PASSED","COMPLETED","HOLD","FAILED","REVISION","PAUSED","CANCELLED"].map(s=>`<div class="list-row"><span>${pill(s)}</span><strong>${orders.filter(o=>o.status===s).length}</strong></div>`).join("")}</div>`;
+}
+function renderSettings() {
+ return pageHead("Settings","การตั้งค่าเบื้องต้น")+
+ `<div class="card"><h3>Project Configuration</h3>
+ <div class="list">
+ <div class="list-row"><div class="row-main"><strong>Project Owner</strong><small>เจ้าของโรงงาน</small></div><strong>PIMTHARA</strong></div>
+ <div class="list-row"><div class="row-main"><strong>Employee Count</strong><small>จำนวนพนักงานตามโครงสร้าง</small></div><strong>14</strong></div>
+ <div class="list-row"><div class="row-main"><strong>Environment</strong><small>โหมดเว็บไซต์</small></div><span class="pill yellow">DEMO</span></div>
+ <div class="list-row"><div class="row-main"><strong>Backend / AI / n8n</strong><small>ระบบเชื่อมต่อจริง</small></div><span class="pill">NOT CONNECTED</span></div>
+ </div></div>
+ <div class="card" style="margin-top:14px"><h3>การจัดการข้อมูลทดลอง</h3><p class="muted small">ข้อมูล Work Order และประวัติในหน้าเว็บนี้ยังไม่ถูกบันทึกลงฐานข้อมูล</p><button class="btn" onclick="clearDemo()">ล้างข้อมูลทดลอง</button></div>`;
+}
+function renderCreate() {
+ return pageHead("สร้าง Work Order","สร้างงานตัวอย่างสำหรับทดสอบหน้าเว็บไซต์")+
+ `<div class="card"><form onsubmit="createOrder(event)">
+ <div class="field"><label for="title">ชื่องาน *</label><input id="title" required maxlength="120" placeholder="เช่น สร้างคอนเทนต์สินค้าใหม่"></div>
+ <div class="form-grid">
+ <div class="field"><label for="type">ประเภทงาน *</label><select id="type"><option value="PRODUCT">PRODUCT</option><option value="CONTENT">CONTENT</option><option value="VIDEO CONTENT">VIDEO CONTENT</option><option value="VIDEO EDIT ONLY">VIDEO EDIT ONLY</option></select></div>
+ <div class="field"><label for="priority">ความสำคัญ</label><select id="priority"><option>NORMAL</option><option>LOW</option><option>HIGH</option><option>URGENT</option></select></div>
+ </div>
+ <div class="field"><label for="requirement">รายละเอียด / ผลลัพธ์ที่ต้องการ *</label><textarea id="requirement" required maxlength="1500" placeholder="ระบุสิ่งที่ต้องการให้ทำ"></textarea></div>
+ <div class="field"><label for="workflow">Workflow</label><select id="workflow"><option>WF-01</option><option>WF-02</option><option>WF-03</option><option>WF-04</option></select></div>
+ <div class="notice">การสร้างงานนี้เป็น DEMO ในเบราว์เซอร์ ยังไม่ส่งคำสั่งให้พนักงาน AI จริง</div>
+ <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" type="submit">สร้างงานทดลอง</button><button class="btn" type="button" onclick="showPage('orders')">ยกเลิก</button></div>
+ </form></div>`;
+}
+function render() {
+ const main=document.getElementById("main");
+ const pages={
+  dashboard:renderDashboard,factory:renderFactory,employees:renderEmployees,
+  orders:renderOrders,queue:renderQueue,workflow:renderWorkflow,
+  qc:renderQC,history:renderHistory,reports:renderReports,
+  settings:renderSettings,create:renderCreate
+ };
+ main.innerHTML=(pages[currentPage]||renderDashboard)();
+}
+function createOrder(event) {
+ event.preventDefault();
+ const title=document.getElementById("title").value.trim();
+ const requirement=document.getElementById("requirement").value.trim();
+ if(!title||!requirement) return toast("กรุณากรอกชื่องานและรายละเอียด");
+ const type=document.getElementById("type").value;
+ const wf=document.getElementById("workflow").value;
+ const id="WO-"+String(nextOrder++).padStart(4,"0");
+ const order={
+  id,title,requirement,type,priority:document.getElementById("priority").value,
+  workflow:wf,status:"QUEUED",employeeId:null,ownerName:"ยังไม่มอบหมาย",
+  createdAt:new Date().toLocaleString("th-TH"),timeline:[]
+ };
+ order.timeline.push({time:order.createdAt,status:"QUEUED",note:"สร้าง Work Order ตัวอย่าง"});
+ orders.unshift(order);
+ log("CREATE_WORK_ORDER",id+" · "+title);
+ toast("สร้างงานทดลอง "+id+" แล้ว");
+ showPage("orders");
+}
+function openEmployee(id) {
+ const e=employee(id);
+ if(!e) return;
+ const assigned=orders.filter(o=>o.employeeId===id&&!["COMPLETED","CANCELLED"].includes(o.status));
+ document.getElementById("modalTitle").textContent=e.name+" · "+e.role;
+ document.getElementById("modalContent").innerHTML=`
+ <div style="display:flex;gap:14px;align-items:center;margin-top:18px">
+ <div style="font-size:45px">${e.face}</div><div><strong style="font-size:20px">${esc(e.name)}</strong><div class="muted">${esc(e.id)}</div><div class="muted small">${esc(e.dept)}</div></div>
+ </div>
+ <div class="detail-grid">
+ <div class="detail"><small>Employee ID</small><strong>${esc(e.id)}</strong></div>
+ <div class="detail"><small>Primary Role</small><strong>${esc(e.role)}</strong></div>
+ <div class="detail"><small>Current Status</small><strong>${assigned.length?"มีงานในระบบ":"รอรับงาน"}</strong></div>
+ <div class="detail"><small>Current Work Order</small><strong>${assigned.length?esc(assigned[0].id):"ไม่มี"}</strong></div>
+ </div>
+ <div class="section-title"><h3>งานที่เกี่ยวข้อง</h3></div>
+ ${assigned.length?`<div class="list">${assigned.map(orderRow).join("")}</div>`:`<p class="muted small">ยังไม่มีงานที่มอบหมายให้พนักงานคนนี้ในต้นแบบ</p>`}
+ <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px">
+ <button class="btn primary" onclick="closeModal();showPage('orders')">Work Orders</button>
+ <button class="btn" onclick="closeModal();showPage('history')">Timeline / History</button>
+ </div>`;
+ document.getElementById("modal").classList.add("open");
+}
+function openOrder(id) {
+ const o=orders.find(x=>x.id===id);
+ if(!o) return;
+ document.getElementById("modalTitle").textContent=o.id+" · รายละเอียดงาน";
+ const canAssign=!["COMPLETED","CANCELLED"].includes(o.status);
+ document.getElementById("modalContent").innerHTML=`
+ <div class="detail-grid">
+ <div class="detail"><small>Work Order ID</small><strong>${esc(o.id)}</strong></div>
+ <div class="detail"><small>Status</small><strong>${esc(statusThai(o.status))}</strong></div>
+ <div class="detail"><small>ประเภท</small><strong>${esc(o.type)}</strong></div>
+ <div class="detail"><small>Priority</small><strong>${esc(o.priority)}</strong></div>
+ <div class="detail"><small>Workflow</small><strong>${esc(o.workflow)}</strong></div>
+ <div class="detail"><small>ผู้รับผิดชอบ</small><strong>${esc(o.ownerName||"-")}</strong></div>
+ </div>
+ <div class="field"><label>ชื่องาน</label><div>${esc(o.title)}</div></div>
+ <div class="field"><label>รายละเอียด</label><div>${esc(o.requirement)}</div></div>
+ ${canAssign?`<div class="field"><label for="assignEmployee">มอบหมายพนักงาน (ทดลอง)</label><select id="assignEmployee">${employees.map(e=>`<option value="${e.id}" ${e.id===o.employeeId?"selected":""}>${esc(e.id)} · ${esc(e.name)} — ${esc(e.role)}</option>`).join("")}</select></div>
+ <div class="field"><label for="changeStatus">เปลี่ยนสถานะ (ทดลอง)</label><select id="changeStatus">${["QUEUED","ASSIGNED","IN_PROGRESS","READY_FOR_QC","QC","PASSED","COMPLETED","HOLD","FAILED","REVISION","PAUSED","CANCELLED"].map(s=>`<option value="${s}" ${s===o.status?"selected":""}>${esc(statusThai(s))}</option>`).join("")}</select></div>
+ <button class="btn primary" onclick="updateOrder('${o.id}')">บันทึกการเปลี่ยนแปลง</button>`:""}
+ <div class="section-title"><h3>Timeline</h3></div>
+ <div class="list">${o.timeline.map(t=>`<div class="list-row"><div class="row-main"><strong>${esc(statusThai(t.status))}</strong><small>${esc(t.time)} · ${esc(t.note)}</small></div></div>`).join("")}</div>
+ <div class="notice" style="margin-top:14px">การมอบหมายและเปลี่ยนสถานะนี้เป็นเพียงการจำลอง ยังไม่มีการตรวจสิทธิ์หรือส่งงานให้ AI จริง</div>`;
+ document.getElementById("modal").classList.add("open");
+}
+function updateOrder(id) {
+ const o=orders.find(x=>x.id===id);
+ if(!o) return;
+ const select=document.getElementById("assignEmployee");
+ const statusSelect=document.getElementById("changeStatus");
+ if(!select||!statusSelect) return;
+ const e=employee(select.value);
+ const previous=o.status;
+ o.employeeId=e.id;o.ownerName=e.name;
+ o.status=statusSelect.value;
+ const time=new Date().toLocaleString("th-TH");
+ o.timeline.unshift({time,status:o.status,note:"ปรับข้อมูลผ่านหน้า DEMO"});
+ log("UPDATE_WORK_ORDER",`${o.id}: ${previous} → ${o.status}; owner=${e.id}`);
+ closeModal();render();toast("อัปเดตข้อมูลทดลองแล้ว");
+}
+function closeModal() {
+ document.getElementById("modal").classList.remove("open");
+ render();
+}
+function clearDemo() {
+ if(!confirm("ยืนยันล้าง Work Orders และประวัติทดลองทั้งหมดหรือไม่?")) return;
+ orders=[];history=[];nextOrder=1;
+ log("CLEAR_DEMO","ล้างข้อมูลทดลอง");
+ toast("ล้างข้อมูลทดลองแล้ว");
+ render();
+}
+render();
+</script>
+</body>
+</html>
+
