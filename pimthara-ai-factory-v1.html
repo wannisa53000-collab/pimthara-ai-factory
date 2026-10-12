@@ -558,7 +558,240 @@ function clearDemo() {
  render();
 }
 render();
+</script> 
+  <!-- PIMTHARA AI FACTORY - SUPABASE CONNECTION -->
+<style>
+  #owner-login-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #0b1020;
+    color: #f1f5ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: system-ui, sans-serif;
+  }
+
+  #owner-login-panel .login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 24px;
+    border: 1px solid #2b3852;
+    border-radius: 16px;
+    background: #131b2e;
+  }
+
+  #owner-login-panel h2 {
+    margin-top: 0;
+  }
+
+  #owner-login-panel input,
+  #owner-login-panel button {
+    width: 100%;
+    padding: 13px;
+    margin-top: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+
+  #owner-login-panel input {
+    background: #0b1020;
+    color: white;
+    border: 1px solid #2b3852;
+  }
+
+  #owner-login-panel button {
+    background: #70a5ff;
+    color: #0b1020;
+    border: 0;
+    font-weight: 700;
+  }
+
+  #owner-login-message {
+    overflow-wrap: anywhere;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  #owner-connection-status {
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    z-index: 99998;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #131b2e;
+    color: #f1f5ff;
+    font-size: 12px;
+  }
+</style>
+
+<div id="owner-login-panel">
+  <div class="login-card">
+    <h2>PIMTHARA AI FACTORY</h2>
+    <p>OWNER LOGIN</p>
+
+    <form id="owner-login-form">
+      <input
+        id="owner-email"
+        type="email"
+        placeholder="Owner Email"
+        autocomplete="username"
+        required
+      >
+
+      <input
+        id="owner-password"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+        required
+      >
+
+      <button id="owner-login-button" type="submit">
+        เข้าสู่ระบบ
+      </button>
+    </form>
+
+    <p id="owner-login-message" role="status">
+      กำลังเตรียมเชื่อมต่อระบบ...
+    </p>
+  </div>
+</div>
+
+<div id="owner-connection-status">
+  Supabase: กำลังเชื่อมต่อ
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ใส่ค่าจริงจาก Supabase ของ PIMTHARA
+  const SUPABASE_URL = "https://awtxuvqkryplruvliaxf.supabase.co/rest/v1/";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_uVqkPh6CRPv2Fhl8nD5m1g_Zq0XgZbM";
+
+  const panel = document.getElementById("owner-login-panel");
+  const form = document.getElementById("owner-login-form");
+  const message = document.getElementById("owner-login-message");
+  const button = document.getElementById("owner-login-button");
+  const status = document.getElementById("owner-connection-status");
+
+  let supabaseClient = null;
+
+  function showMessage(text) {
+    message.textContent = text;
+  }
+
+  function showStatus(text) {
+    status.textContent = "Supabase: " + text;
+  }
+
+  async function start() {
+    if (!window.supabase || !window.supabase.createClient) {
+      showMessage("โหลด Supabase ไม่สำเร็จ กรุณาตรวจสอบ script CDN");
+      showStatus("โหลดไลบรารีไม่สำเร็จ");
+      return;
+    }
+
+    if (
+      SUPABASE_URL === "ใส่_PROJECT_URL_ตรงนี้" ||
+      SUPABASE_PUBLISHABLE_KEY === "ใส่_PUBLISHABLE_KEY_ตรงนี้"
+    ) {
+      showMessage("กรุณาใส่ Project URL และ Publishable Key ในโค้ดก่อน");
+      showStatus("รอการตั้งค่า");
+      return;
+    }
+
+    try {
+      supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+      const { data, error } = await supabaseClient.auth.getSession();
+
+      if (error) throw error;
+
+      showStatus("เชื่อมต่อไลบรารีแล้ว");
+
+      if (data.session) {
+        await verifyOwner(data.session.user);
+      } else {
+        showMessage("กรอกอีเมลและรหัสผ่าน Owner เพื่อเข้าสู่ระบบ");
+      }
+    } catch (error) {
+      showMessage("เริ่มระบบไม่สำเร็จ: " + error.message);
+      showStatus("เกิดข้อผิดพลาด");
+    }
+  }
+
+  async function verifyOwner(user) {
+    // ตรวจสอบว่าอ่านข้อมูลได้จริงด้วยสิทธิ์ของบัญชีที่เข้าสู่ระบบ
+    const { data, error } = await supabaseClient
+      .from("employees")
+      .select("employee_id")
+      .limit(1);
+
+    if (error) {
+      showMessage(
+        "เข้าสู่ระบบแล้ว แต่ตรวจสอบตาราง employees ไม่สำเร็จ: " +
+        error.message
+      );
+      showStatus("ตรวจสอบฐานข้อมูลไม่ผ่าน");
+      return;
+    }
+
+    panel.style.display = "none";
+    showStatus("เข้าสู่ระบบแล้ว");
+
+    console.info("PIMTHARA AI FACTORY: Owner authenticated.");
+    console.info("Employees table connection verified.");
+    console.info("Accessible employee records:", data.length);
+  }
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    if (!supabaseClient) {
+      showMessage("ยังเชื่อมต่อไม่ได้ กรุณาตรวจสอบ URL และ Key");
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = "กำลังเข้าสู่ระบบ...";
+    showMessage("กำลังตรวจสอบบัญชี Owner");
+
+    try {
+      const email = document
+        .getElementById("owner-email").value.trim();
+
+      const password = document
+        .getElementById("owner-password").value;
+
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (error) throw error;
+
+      await verifyOwner(data.user);
+    } catch (error) {
+      showMessage("เข้าสู่ระบบไม่สำเร็จ: " + error.message);
+      showStatus("เข้าสู่ระบบไม่สำเร็จ");
+    } finally {
+      button.disabled = false;
+      button.textContent = "เข้าสู่ระบบ";
+    }
+  });
+
+  start();
+})();
 </script>
+<!-- END SUPABASE CONNECTION -->
 </body>
 </html>
 
